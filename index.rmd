@@ -1,0 +1,15 @@
+---
+title: "Noah Beckage's Website"
+author: "Noah Beckage"
+date: "1/26/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Welcome to my website!
+
+
+Link to [this page](newpage.html)
