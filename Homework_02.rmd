@@ -1,5 +1,5 @@
 ---
-title: "Assignments"
+title: "Homework_02"
 author: "Noah Beckage"
 date: "1/26/2022"
 output: html_document
@@ -10,4 +10,3 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 [Home Page](index.html)
-
