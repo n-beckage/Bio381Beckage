@@ -12,5 +12,6 @@ knitr::opts_chunk$set(echo = TRUE)
 Welcome to my website! This page has been created as part of the coursework for BIOL 381 Computational Biology at UVM. Find links to homework assignments for said class below.
 
 
-Link to my [Homework #2 page](Homework_02.html)
+[Homework #2 page](Homework_02.html)
+
 [Homework #3 page](Homework_03.html)
