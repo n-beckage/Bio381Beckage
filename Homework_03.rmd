@@ -8,9 +8,97 @@ output: html_document
 [Home page](index.html)
 
 
-1. This is the first question text.
+1. The first task was to change this text:
 ```
-FIND:
-REPLACE:
+First String    Second      1.22      3.4
+Second          More Text   1.555555  2.2220
+Third           x           3         124
+```
+such that it was in a `.csv` format, like this:
+```
+First String,Second,1.22,3.4
+Second,More Text,1.555555,2.2220
+Third,x,3,124
 ```
 
+To do this, I used the Regex commands noted below. The `\s{2,}` expression returns 2 or more consecutive spaces, and the replace expression replaces these spaces with a comma.
+
+```
+FIND: \s{2,}
+REPLACE: ,
+```
+
+2. Transform this:
+```
+Ballif, Bryan, University of Vermont
+Ellison, Aaron, Harvard Forest
+Record, Sydne, Bryn Mawr
+```
+into this:
+```
+Ballif Bryan (University of Vermont)
+Ellison Aaron (Harvard Forest)
+Record Sydne (Bryn Mawr)
+```
+To accomplish this transformation, I wrote a regex that would highlight each line. Then, I captured each segment that I wanted to keep (first word, a space + second word, and the last phrase). My replace command included these captures with a space added after the second word and parantheses around the third capture.
+
+```
+FIND: (\w+),(\s\w+),\s(.*)
+REPLACE: \1\2 (\3)
+```
+
+3. Transform
+```
+0001 Georgia Horseshoe.mp3 0002 Billy In The Lowground.mp3 0003 Cherokee Shuffle.mp3 0004 Walking Cane.mp3
+```
+to
+```
+0001 Georgia Horseshoe.mp3
+0002 Billy In The Lowground.mp3
+0003 Cherokee Shuffle.mp3
+0004 Walking Cane.mp3
+```
+
+I captured the end of each to-be row with a search for `p3`, while also highlighting the space after capture. In the replace command, I kept the captured row ending, but replaced the space after each with a new line.
+
+```
+FIND: (p3)\s
+REPLACE: \1\n
+```
+
+4. Transform the output from the previous question into:
+```
+Georgia Horseshoe_0001.mp3
+Billy In The Lowground_0002.mp3
+Cherokee Shuffle_0003.mp3
+Walking Cane_0004.mp3
+```
+
+Here I wrote a regex to highlight each row in a way that enabled me to capture three components: the number at the beginning of each row, the name of each song, and the .mp3 file ending (with the `\n` character included). In my replace command I included each of these components in the correct order with and underline separating the song name and corresponding number.
+
+```
+FIND: (\d+)\h([^.]+)(.*)
+REPLACE: \2_\1\3
+```
+
+5. Transform:
+```
+Camponotus,pennsylvanicus,10.2,44
+Camponotus,herculeanus,10.5,3
+Myrmica,punctiventris,12.2,4
+Lasius,neoniger,3.3,55
+```
+to
+```
+C_pennsylvanicus,44
+C_herculeanus,3
+M_punctiventris,4
+L_neoniger,55
+```
+
+Think I'm finally catching on to the strategy here. Again for the find expression I highlighted each line in parts, capturing the parts I would need for the replace command. In said command I had the first capture, which was the first letter of the genus, followed by an underscore and the second capture, which was the species name and a comma. Finally the third capture included the second integer value and the new line character.
+
+```
+FIND: (\w)\w+,(\w+,)\d+.\d,(.*)
+REPLACE: \1_\2\3
+```
