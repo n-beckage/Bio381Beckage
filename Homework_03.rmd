@@ -1,0 +1,9 @@
+---
+title: "Homework_03"
+author: "Noah Beckage"
+date: "2/2/2022"
+output: html_document
+---
+
+[Home page](index.html)
+
