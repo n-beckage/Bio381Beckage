@@ -2,7 +2,10 @@
 title: "Homework_02"
 author: "Noah Beckage"
 date: "1/26/2022"
-output: html_document
+output: 
+  html_document: 
+    theme: sandstone
+    number_sections: yes
 ---
 
 ```{r setup, include=FALSE}
@@ -10,3 +13,21 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 [Home Page](index.html)
+
+* Item 1
+* Item 2
+    + Item 2a
+    + Item 2b
+    
+1. Item 1
+2. Item 2
+3. Item 3
+    + Item 3a
+    + Item 3b
+    
+    
+First Header  | Second Header
+------------- | -------------
+Content Cell  | Content Cell
+Content Cell  | Content Cell
+
