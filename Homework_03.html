@@ -454,6 +454,42 @@ the new line character.</p>
 <pre><code>FIND: (\w)\w+,(\w+,)\d+.\d,(.*)
 REPLACE: \1_\2\3</code></pre>
 </div>
+<div id="question-6" class="section level3">
+<h3>Question 6</h3>
+<p>Transform the original text from question 5 into this:</p>
+<pre><code>C_penn,44
+C_herc,3
+M_punc,4
+L_neon,55</code></pre>
+<p>Following the same aforementioned strategy, here I captured the first
+letter of the genus name, then the first four letters of the species
+name, and finally the last integer (with a preceding comma and new line
+afterward). I then placed these captures sequentially in the replace
+command, inserting an underscore character between the first and second
+capture.</p>
+<pre><code>FIND: (\w)\w+,(\w{4})\w+,\d+.\d(.*)
+REPLACE: \1_\2\3</code></pre>
+</div>
+<div id="question-7" class="section level3">
+<h3>Question 7</h3>
+<p>Transform the original text from question 5 into this:</p>
+<pre><code>Campen, 44, 10.2
+Camher, 3, 10.5
+Myrpun, 4, 12.2
+Lasneo, 55, 3.3</code></pre>
+<p>Here I captured the first three characters, highlighted the rest of
+the genus name and following comma until I reached the species name. I
+captured the first three letters of the species name, then highlighted
+the rest of the name and following comma, then captured the following
+number, decimal included (accomplished with a simple character set).
+Finally, I captured the last digits. In my replace command, I fused the
+genus and species names with captures, pasted the two numbers in the
+specified order, and added spaces and commas in between as
+necessary.</p>
+<pre><code>FIND: (\w{3})\w+,(\w{3})\w+,([\d.]+),(\d+)
+REPLACE: \1\2, \4, \3</code></pre>
+<p>This is the end of homework assignment 3. Thanks for reading!</p>
+</div>
 
 
 
