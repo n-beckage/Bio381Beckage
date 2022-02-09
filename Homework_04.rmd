@@ -1,5 +1,5 @@
 ---
-title: "Homework_04.rmd"
+title: "Homework_04"
 author: "Noah Beckage"
 date: "2/9/2022"
 output: html_document
@@ -50,21 +50,24 @@ polar
 
 ### Question 4
 ```{r}
+# Defining the initial queue
 queue <- c('sheep','fox','owl','ant')
 queue
 # a
 queue <- c(queue,'serpent')
 queue
-````
+```
 
 Taking a detour from the homework question to explore the logic of the %in% operator
 ```{r}
 'sheep' %in% queue # is 'sheep' in vector queue?
 
 queue %in% 'sheep' # is queue in sheep? AKA, for each item in queue, is it in 'sheep'? Basically it is iterating through queue and asking the question is queue[i] in the string (AKA equal to) 'sheep' (could be any other vector as well). Thus, returns an answer for each item in queue
-# [1]  TRUE FALSE FALSE FALSE FALSE
-queue[c(T,T,T,F,T)] # returns the first, second, third, and firth element in queue
+
+queue[c(T,T,T,F,T)] # returns the first, second, third, and fifth element in queue
+
 queue[queue %in% 'sheep'] # equal to queue[c(T,F,F,F,F)], since queue %in% 'sheep' returns the vector c(T,F,F,F,F))
+
 queue[!queue %in% 'sheep'] # equal to queue[c(F,T,T,T,T)] because of the inverse (!) operator
 
 ```
@@ -80,11 +83,11 @@ queue <- c('donkey',queue)
 queue
 
 # d
-queue <- queue[-5]
+queue <- queue[-5] # or queue[!queue %in% 'serpent'] as done previously; helpful if the index is unknown
 queue
 
 # e
-queue <-queue[-3] # or queue[!queue %in% 'owl'] as done previosuly; helpful if the index id unknown
+queue <-queue[-3]
 queue
 
 # f

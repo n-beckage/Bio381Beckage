@@ -12,7 +12,7 @@
 <meta name="author" content="Noah Beckage" />
 
 
-<title>Homework_04.rmd</title>
+<title>Homework_04</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -358,7 +358,7 @@ pre code {
 
 
 
-<h1 class="title toc-ignore">Homework_04.rmd</h1>
+<h1 class="title toc-ignore">Homework_04</h1>
 <h4 class="author">Noah Beckage</h4>
 <h4 class="date">2/9/2022</h4>
 
@@ -403,11 +403,12 @@ cart &lt;- runif(2)
 # creating polar coords from the cartesian coords
 polar &lt;- c(sqrt(cart[1]^2+cart[2]^2),atan(cart[2]/cart[1]))
 polar</code></pre>
-<pre><code>## [1] 1.1737870 0.8333105</code></pre>
+<pre><code>## [1] 0.6364279 0.7075440</code></pre>
 </div>
 <div id="question-4" class="section level3">
 <h3>Question 4</h3>
-<pre class="r"><code>queue &lt;- c(&#39;sheep&#39;,&#39;fox&#39;,&#39;owl&#39;,&#39;ant&#39;)
+<pre class="r"><code># Defining the initial queue
+queue &lt;- c(&#39;sheep&#39;,&#39;fox&#39;,&#39;owl&#39;,&#39;ant&#39;)
 queue</code></pre>
 <pre><code>## [1] &quot;sheep&quot; &quot;fox&quot;   &quot;owl&quot;   &quot;ant&quot;</code></pre>
 <pre class="r"><code># a
@@ -420,8 +421,7 @@ the %in% operator</p>
 <pre><code>## [1] TRUE</code></pre>
 <pre class="r"><code>queue %in% &#39;sheep&#39; # is queue in sheep? AKA, for each item in queue, is it in &#39;sheep&#39;? Basically it is iterating through queue and asking the question is queue[i] in the string (AKA equal to) &#39;sheep&#39; (could be any other vector as well). Thus, returns an answer for each item in queue</code></pre>
 <pre><code>## [1]  TRUE FALSE FALSE FALSE FALSE</code></pre>
-<pre class="r"><code># [1]  TRUE FALSE FALSE FALSE FALSE
-queue[c(T,T,T,F,T)] # returns the first, second, third, and firth element in queue</code></pre>
+<pre class="r"><code>queue[c(T,T,T,F,T)] # returns the first, second, third, and fifth element in queue</code></pre>
 <pre><code>## [1] &quot;sheep&quot;   &quot;fox&quot;     &quot;owl&quot;     &quot;serpent&quot;</code></pre>
 <pre class="r"><code>queue[queue %in% &#39;sheep&#39;] # equal to queue[c(T,F,F,F,F)], since queue %in% &#39;sheep&#39; returns the vector c(T,F,F,F,F))</code></pre>
 <pre><code>## [1] &quot;sheep&quot;</code></pre>
@@ -437,11 +437,11 @@ queue &lt;- c(&#39;donkey&#39;,queue)
 queue</code></pre>
 <pre><code>## [1] &quot;donkey&quot;  &quot;fox&quot;     &quot;owl&quot;     &quot;ant&quot;     &quot;serpent&quot;</code></pre>
 <pre class="r"><code># d
-queue &lt;- queue[-5]
+queue &lt;- queue[-5] # or queue[!queue %in% &#39;serpent&#39;] as done previously; helpful if the index is unknown
 queue</code></pre>
 <pre><code>## [1] &quot;donkey&quot; &quot;fox&quot;    &quot;owl&quot;    &quot;ant&quot;</code></pre>
 <pre class="r"><code># e
-queue &lt;-queue[-3] # or queue[!queue %in% &#39;owl&#39;] as done previosuly; helpful if the index id unknown
+queue &lt;-queue[-3]
 queue</code></pre>
 <pre><code>## [1] &quot;donkey&quot; &quot;fox&quot;    &quot;ant&quot;</code></pre>
 <pre class="r"><code># f
