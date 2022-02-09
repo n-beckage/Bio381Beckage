@@ -1,0 +1,105 @@
+---
+title: "Homework_04.rmd"
+author: "Noah Beckage"
+date: "2/9/2022"
+output: html_document
+---
+
+[Home page](index.html)
+
+### Question 1
+```{r}
+x <- 1.1 ; a <- 2.2; b <- 3.3
+
+# a
+z <- x^a^b
+print(z)
+
+# b
+z <- (x^a)^b
+print(z)
+
+# c
+z <- 3*x^3+2*x^2+1
+print(z)
+```
+
+
+### Question 2
+```{r}
+a <- c(seq(1,8),seq(7,1))
+a
+
+b <- rep(seq(5),seq(5)) # the same a rep(c(1,2,3,4,5),c(1,2,3,4,5))
+b
+
+c <- rep(seq(5,1),seq(5))
+c
+
+```
+### Question 3
+```{r}
+# creating the random uniform numbers
+cart <- runif(2)
+
+# creating polar coords from the cartesian coords
+polar <- c(sqrt(cart[1]^2+cart[2]^2),atan(cart[2]/cart[1]))
+polar
+
+```
+
+### Question 4
+```{r}
+queue <- c('sheep','fox','owl','ant')
+queue
+# a
+queue <- c(queue,'serpent')
+queue
+````
+
+Taking a detour from the homework question to explore the logic of the %in% operator
+```{r}
+'sheep' %in% queue # is 'sheep' in vector queue?
+
+queue %in% 'sheep' # is queue in sheep? AKA, for each item in queue, is it in 'sheep'? Basically it is iterating through queue and asking the question is queue[i] in the string (AKA equal to) 'sheep' (could be any other vector as well). Thus, returns an answer for each item in queue
+# [1]  TRUE FALSE FALSE FALSE FALSE
+queue[c(T,T,T,F,T)] # returns the first, second, third, and firth element in queue
+queue[queue %in% 'sheep'] # equal to queue[c(T,F,F,F,F)], since queue %in% 'sheep' returns the vector c(T,F,F,F,F))
+queue[!queue %in% 'sheep'] # equal to queue[c(F,T,T,T,T)] because of the inverse (!) operator
+
+```
+
+Now back to the homework
+```{r}
+# b
+queue <- queue[!queue %in% 'sheep']
+queue
+
+# c
+queue <- c('donkey',queue)
+queue
+
+# d
+queue <- queue[-5]
+queue
+
+# e
+queue <-queue[-3] # or queue[!queue %in% 'owl'] as done previosuly; helpful if the index id unknown
+queue
+
+# f
+queue <- append(queue,'aphid',2)
+queue
+
+# g
+which(queue=='ant')
+
+```
+
+### Question 5
+```{r}
+x <- seq(100)
+x <- x[x%%2!=0 & x%%3!=0 & x%%7!=0]
+x
+```
+
