@@ -1,0 +1,66 @@
+---
+title: "Homework_05"
+author: "Noah Beckage"
+date: "2/16/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+[Home page](index.html)
+
+### Question 1
+```{r Question 1}
+n_dims <- round(runif(1,min=3,max=10))
+n_vect <- c(1:n_dims**2)
+shuffle <- sample(n_vect,length(n_vect))
+
+# from here on out I'm writing my code so that it's repeatable given n_dims is equal to any random integer
+sqmatrix <- matrix(shuffle,ncol=sqrt(length(shuffle)))
+sqmatrix
+tpose <- t(sqmatrix)
+tpose # elements are flipped over the top-left to bottom-right diagonal
+firstRowSumMean <- c(sum(tpose[1,]),mean(tpose[1,]))
+firstRowSumMean
+lastrowSumMean <- c(sum(tpose[length(tpose[1,]),]),mean(tpose[length(tpose[1,]),]))
+lastrowSumMean
+eig <- eigen(tpose)
+eig$values # these are either positive or negative doubles or complex numbers, depending on what n_dims is. I don't remember enough of my linear algebra class off the top of my head to speak as to why some matrices return complex eigen values and others don't. Curious.
+eig$vectors # These seems to be doubles or complex numbers within the range -1<0<1
+typeof(eig$values) # Indeed these are both doubles (or complex numbers, depending on n_dims)
+typeof(eig$vectors)
+```
+
+### Question 2
+```{r Question 2}
+my_matrix <- matrix(runif(16),ncol=4)
+my_logical <- runif(100)>=0.5
+my_letters <- sample(letters,26)
+my_list <- list(my_matrix,my_logical,my_letters)
+my_list
+new_list <- list(my_list[[1]][2,2],my_list[[2]][2],my_list[[3]][2])
+new_list
+types <- c(typeof(new_list[[1]]),typeof(new_list[[2]]),typeof(new_list[[3]]))
+types # Checks out
+atomic <- c(new_list[[1]],new_list[[2]],new_list[[3]])
+atomic
+typeof(atomic) # all elements were coerced into character strings
+```
+
+### Question 3
+```{r Question 3}
+my_unis <- runif(26,0,10)
+my_letters <- sample(LETTERS,26)
+df <- data.frame(my_unis,my_letters)
+df[sample(26,4),1] <- NA
+df
+which(is.na(df[,1]))
+df
+df[,2] <- sort(df[,2])
+df
+mean(df[,1],na.rm=T)
+```
+
+
