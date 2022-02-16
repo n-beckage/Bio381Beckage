@@ -13,11 +13,10 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ### Question 1
 ```{r Question 1}
+# I've written my code so that it's repeatable given n_dims is equal to any random integer
 n_dims <- round(runif(1,min=3,max=10))
 n_vect <- c(1:n_dims**2)
 shuffle <- sample(n_vect,length(n_vect))
-
-# from here on out I'm writing my code so that it's repeatable given n_dims is equal to any random integer
 sqmatrix <- matrix(shuffle,ncol=sqrt(length(shuffle)))
 sqmatrix
 tpose <- t(sqmatrix)
@@ -57,7 +56,6 @@ df <- data.frame(my_unis,my_letters)
 df[sample(26,4),1] <- NA
 df
 which(is.na(df[,1]))
-df
 df[,2] <- sort(df[,2])
 df
 mean(df[,1],na.rm=T)
