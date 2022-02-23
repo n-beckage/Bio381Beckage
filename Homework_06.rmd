@@ -1,0 +1,172 @@
+---
+title: "Homework_06"
+author: "Noah Beckage"
+date: "2/23/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+[Home page](index.html)
+
+# 1. Running the Sample Code
+
+```{r Open Libraries}
+library(ggplot2) # for graphics
+library(MASS) # for maximum likelihood estimation
+```
+
+```{r Read Vector, eval=FALSE}
+# quick and dirty, a truncated normal distribution to work on the solution set
+
+z <- rnorm(n=3000,mean=0.2)
+z <- data.frame(1:3000,z)
+names(z) <- list("ID","myVar")
+z <- z[z$myVar>0,]
+str(z)
+summary(z$myVar)
+View(z)
+```
+
+I first ran all of the probability density plots on the sample data above as a tutorial to get familiar with what each chunk does. Now, I'm importing data from Bickerton et al 2012 and using those data for this assignment.
+
+# 2. Using QED Data
+
+```{r Import QED Data}
+z <- read.table("Data/NIHMS50746-supplement-AZ_chemsurvey_QED.csv",header=TRUE,sep=",")
+# Only want the QED values and the chemical ID
+z <- z[,c('CPD_ID','QED')]
+# Let's work with 3000 values instead of over 17,000
+samp <- sample(z$CPD_ID,size=3000)
+z <- z[samp,]
+str(z)
+summary(z)
+#View(z) # Now z is 3000s rows containing chemical ID and corresponding QED values
+```
+
+## Histogram
+
+Let's see what the distribution of this sample of the data looks like. Note that every time this rmarkdown chunk is knitted, all of the following plots will look slightly different, because we will be taking a unique random sample of 3000 from the larger data set of \>17,000 every time.
+
+```{r Histogram}
+p1 <- ggplot(data=z, aes(x=QED, y=..density..)) +
+  geom_histogram(color="grey60",fill="cornsilk",size=0.2) 
+print(p1)
+```
+
+## Empirical Density Curve
+
+This is basically a density plot overlaid on the histogram; remember, a desnity plot is best thought of as a smoothed-out histogram.
+
+```{r Empirical Density Curve, message=FALSE}
+p1 <-  p1 +  geom_density(linetype="dotted",size=0.75)
+print(p1)
+```
+
+## Max Likelihood Parameters
+
+Maximum likelihood parameters (MLPs), for a given distribution, are the parameters that are most likely to give us a distribution that fits our data. In other words, assuming that the distribution of these data is normal, what parameters of a normal distribution (mean and standard deviation) will result in a curve that best represents our data. In yet more words, if we were to sample all the possible normal distributions, the distribution with *these parameters* is most likely to give us a distribution that matches our actual data. Gosh I hope that makes sense.
+
+Also, we are using the function `fitdistr` to calculate MLPs
+
+```{r Max Likelihood Parameters}
+normPars <- fitdistr(z$QED,"normal")
+print(normPars)
+str(normPars)
+normPars$estimate["mean"] # note structure of getting a named attribute
+# normPars is a list
+```
+
+## Normal Probability Density
+
+Now to visualize my wordy explanation from above: this red curve is the normal distribution that best fits these data. The parameters of this red curve are the maximum likelihood parameters.
+
+```{r Normal Probability Density, message=FALSE}
+meanML <- normPars$estimate["mean"]
+sdML <- normPars$estimate["sd"]
+
+xval <- seq(0,max(z$QED),len=length(z$QED))
+
+ stat <- stat_function(aes(x = xval, y = ..y..), fun = dnorm, colour="red", n = length(z$QED), args = list(mean = meanML, sd = sdML))
+ p1 + stat
+```
+
+## Exponential Probability Density
+
+Now, rinse and repeat with an exponential distribution
+
+```{r Exponential Probability Density, message=FALSE}
+expoPars <- fitdistr(z$QED,"exponential")
+rateML <- expoPars$estimate["rate"]
+
+stat2 <- stat_function(aes(x = xval, y = ..y..), fun = dexp, colour="blue", n = length(z$QED), args = list(rate=rateML))
+ p1 + stat + stat2
+```
+
+## Uniform Probability Density
+
+Now with a uniform distribution. There is no need to use `fitdistr` because the maximum likelihood parameters are just the minimum and the maximum of the data:
+
+```{r Uniform Probability Density, message=FALSE}
+stat3 <- stat_function(aes(x = xval, y = ..y..), fun = dunif, colour="darkgreen", n = length(z$QED), args = list(min=min(z$QED), max=max(z$QED)))
+ p1 + stat + stat2 + stat3
+```
+
+## Gamma Probability Density
+
+So on and so forth
+
+```{r Gamma Probability Density}
+gammaPars <- fitdistr(z$QED,"gamma")
+shapeML <- gammaPars$estimate["shape"]
+rateML <- gammaPars$estimate["rate"]
+
+stat4 <- stat_function(aes(x = xval, y = ..y..), fun = dgamma, colour="brown", n = length(z$QED), args = list(shape=shapeML, rate=rateML))
+ p1 + stat + stat2 + stat3 + stat4
+```
+
+## Beta Probability Density
+
+Since these data is already between 0 and 1, I don't need to rescale and can therefore plot the beta probability density curve on the same plot as before:
+
+```{r Beta Probability Density}
+betaPars <- fitdistr(x=z$QED,start=list(shape1=1,shape2=2),"beta")
+
+shape1ML <- betaPars$estimate["shape1"]
+shape2ML <- betaPars$estimate["shape2"]
+
+stat5 <- stat_function(aes(x = xval, y = ..y..), fun = dbeta, colour="orchid", n = length(z$QED), args = list(shape1=shape1ML,shape2=shape2ML))
+p1 + stat + stat2 + stat3 + stat4 + stat5
+```
+
+# 3. What's the best fitting distribution?
+
+# 4. Simulating New Data
+```{r Simulate}
+# getting our MLPs
+normPars <- fitdistr(z$QED,"normal")
+print(normPars)
+
+# extracting the ML mean and ML std
+meanML <- normPars$estimate["mean"]
+sdML <- normPars$estimate["sd"]
+s <- rnorm(n=3000,mean=meanML,sd=sdML)
+s <- data.frame(1:3000,s)
+names(s) <- c('ID','QED')
+```
+
+```{r Sim Plot}
+ps <- ggplot(data=s, aes(x=QED, y=..density..)) +
+  geom_histogram(color="grey60",fill="darkolivegreen1",size=0.2)+
+  xlim(c(0,1))
+
+ps+stat
+```
+
+```{r Fresh Hist}
+pActual <- ggplot(data=z, aes(x=QED, y=..density..)) +
+  geom_histogram(color="grey60",fill="cornsilk",size=0.2) 
+pActual + stat + xlim(c(0,1))
+```
