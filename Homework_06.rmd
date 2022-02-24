@@ -30,7 +30,7 @@ summary(z$myVar)
 View(z)
 ```
 
-I first ran all of the probability density plots on the sample data above as a tutorial to get familiar with what each chunk does. Now, I'm importing data from [Bickerton et al 2012](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3524573/pdf/emss-50746.pdf) and using those data for this assignment. In short, I will be looking at a quantitative estmate of drug-likeness (QED) for a set of molecules.
+I first ran all of the probability density plots on the sample data above as a tutorial to get familiar with what each chunk does. Now, I'm importing data from <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3524573/pdf/emss-50746.pdf" target="_blank">Bickerton et al 2012</a> and using those data for this assignment. In short, I will be looking at a quantitative estimate of drug-likeness (QED) for a set of molecules.
 
 # 2. Using QED Data
 
