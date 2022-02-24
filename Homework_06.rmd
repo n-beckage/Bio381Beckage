@@ -6,7 +6,7 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE,message = FALSE,warning = FALSE)
 ```
 
 [Home page](index.html)
@@ -30,7 +30,7 @@ summary(z$myVar)
 View(z)
 ```
 
-I first ran all of the probability density plots on the sample data above as a tutorial to get familiar with what each chunk does. Now, I'm importing data from Bickerton et al 2012 and using those data for this assignment.
+I first ran all of the probability density plots on the sample data above as a tutorial to get familiar with what each chunk does. Now, I'm importing data from [Bickerton et al 2012](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3524573/pdf/emss-50746.pdf) and using those data for this assignment. In short, I will be looking at a quantitative estmate of drug-likeness (QED) for a set of molecules.
 
 # 2. Using QED Data
 
@@ -142,6 +142,7 @@ p1 + stat + stat2 + stat3 + stat4 + stat5
 ```
 
 # 3. What's the best fitting distribution?
+It seems the **normal distribution** fits these data best.
 
 # 4. Simulating New Data
 ```{r Simulate}
@@ -170,3 +171,6 @@ pActual <- ggplot(data=z, aes(x=QED, y=..density..)) +
   geom_histogram(color="grey60",fill="cornsilk",size=0.2) 
 pActual + stat + xlim(c(0,1))
 ```
+
+The simulated data (green) seems to be an OK model of the actual data (yellow), however it does not capture the left-skewness of the actual data very well. I think in reality, the distribution of QED values for chemical space is most likely heavily right-skewed, in that most chemicals are not drug-like at all (very low QED), and only a few are somewhat to mostly drug-like (medium to high QED). In which case, this simulation does not model the data very well.
+
