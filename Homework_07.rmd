@@ -1,0 +1,85 @@
+---
+title: "Homework_07"
+author: "Noah Beckage"
+date: "3/2/2022"
+output: html_document
+---
+
+![What lovely flowers (Crocus 2022)](iris.jpg)
+
+[Home page](index.html)
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,message = FALSE)
+library(tidyverse)
+```
+# Question 1
+```{r Question 1}
+glimpse(iris)
+```
+Looks like there are 150 observations and 5 variables: sepal length and width, petal length and width, and species
+
+# Question 2
+```{r Question 2}
+iris1 <- iris %>% filter(Species%in%c('virginica','versicolor'),
+                         Sepal.Length>6,
+                         Sepal.Width>2.5)
+glimpse(iris1)
+```
+`iris1` still has the same 5 variables as `iris`, however only 56 observations.
+
+# Question 3
+```{r Question 3}
+iris2 <- iris1 %>% select(!Petal.Length:Petal.Width)
+glimpse(iris2)
+```
+`iris2` still has 56 rows, but only 3 variables: `Species`, `Sepal.Length`, and `Sepal.Width`
+
+# Question 4
+```{r Question 4}
+iris3 <- iris2 %>% arrange(desc(Sepal.Length))
+head(iris3,6)
+```
+
+# Question 5
+```{r Question 5}
+iris4 <- iris3 %>% mutate(Sepal.Area=Sepal.Length*Sepal.Width)
+glimpse(iris4)
+```
+There are still 56 rows, and now 4 variables: `Species`, `Sepal.Length`, `Sepal.Width`, and `Sepal.Area`
+
+# Question 6
+```{r Question 6}
+iris5 <- iris4 %>% summarise(Ave.Sepal.Length=mean(Sepal.Length),
+                             Ave.Sepal.Width=mean(Sepal.Width),
+                             Sample.Size=n())
+iris5
+```
+
+# Question 7
+```{r Question 7}
+iris6 <- iris4 %>% group_by(Species) %>% 
+  summarise(Ave.Sepal.Length=mean(Sepal.Length),
+            Ave.Sepal.Width=mean(Sepal.Width),
+            Sample.Size=n())
+iris6
+```
+
+# Question 8
+```{r Question 8}
+iris6 <- iris %>% filter(Species%in%c('virginica','versicolor'),
+                         Sepal.Length>6,
+                         Sepal.Width>2.5) %>% 
+                  select(!Petal.Length:Petal.Width) %>% 
+                  arrange(desc(Sepal.Length)) %>% 
+                  mutate(Sepal.Area=Sepal.Length*Sepal.Width) %>% 
+                  group_by(Species) %>% 
+                  summarise(Ave.Sepal.Length=mean(Sepal.Length),
+                            Ave.Sepal.Width=mean(Sepal.Width),
+                            Sample.Size=n())
+iris6
+```
+
+
+
+
