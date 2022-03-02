@@ -479,6 +479,28 @@ iris6</code></pre>
 ## 1 versicolor             6.48            2.99          17
 ## 2 virginica              6.79            3.06          39</code></pre>
 </div>
+<div id="question-9" class="section level1">
+<h1>Question 9</h1>
+<pre class="r"><code>longer &lt;- iris %&gt;% 
+  pivot_longer(cols = Sepal.Length:Petal.Width,
+               names_to = &#39;Measure&#39;,
+               values_to = &#39;Value&#39;)
+longer</code></pre>
+<pre><code>## # A tibble: 600 x 3
+##    Species Measure      Value
+##    &lt;fct&gt;   &lt;chr&gt;        &lt;dbl&gt;
+##  1 setosa  Sepal.Length   5.1
+##  2 setosa  Sepal.Width    3.5
+##  3 setosa  Petal.Length   1.4
+##  4 setosa  Petal.Width    0.2
+##  5 setosa  Sepal.Length   4.9
+##  6 setosa  Sepal.Width    3  
+##  7 setosa  Petal.Length   1.4
+##  8 setosa  Petal.Width    0.2
+##  9 setosa  Sepal.Length   4.7
+## 10 setosa  Sepal.Width    3.2
+## # ... with 590 more rows</code></pre>
+</div>
 
 
 

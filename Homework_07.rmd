@@ -80,6 +80,14 @@ iris6 <- iris %>% filter(Species%in%c('virginica','versicolor'),
 iris6
 ```
 
+# Question 9
+```{r Question 9}
+longer <- iris %>% 
+  pivot_longer(cols = Sepal.Length:Petal.Width,
+               names_to = 'Measure',
+               values_to = 'Value')
+longer
+```
 
 
 
