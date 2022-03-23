@@ -1,0 +1,113 @@
+---
+title: "Homework_08"
+author: "Noah Beckage"
+date: "3/16/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message=FALSE)
+```
+
+[Home page](index.html)
+
+```{r libraries}
+library(tidyverse)
+library(boot)
+```
+
+
+# Question 1
+In this assignment, I'll be simulating quantitative estimate of drug-likeness (QED) data, based on the same paper that was my data source for <a href="Homework_06.html" target="_blank">homework #6</a>. The data set from this paper contains molecular information on 17,117 "diverse" compounds, as well as survey responses from AstraZeneca medicinal chemists regarding their intuition about said compounds. One question these chemists were asked was whether or not a given molecule was aesthetically "attractive". The data from these responses can be used to determine whether or not there is a significant difference in QED (druglikeness) between those chemicals deemed attractive vs unattractive. If there is a significant difference in these two classes of chemicals, we would expect to see visually distinct distributions as well as significant statistics.
+
+# Question 2
+To address the aforementioned question with simulated data, a larger sample size is all the better; the ideal sample size would be the 17,117, as that is the actual size of the dataset we are trying to simulate. However, I'll start with an arbitrary, smaller number to begin.
+According to the <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3524573/pdf/emss-50746.pdf" target="_blank">Bickerton paper</a>, attractive chemicals have a mean QED of 0.67 with sd=0.16. Large, complex "unattractive" compounds have a mean QED of 0.34 with sd=0.24. These are the parameters I will be using; though they are not technically hypothetical as they are actually based on real data, I think I will still be able to complete this exercise, as I am still trying to *simulate* real data after all.
+
+# Question 3
+```{r Transfrom to normal}
+# Simulating the "attractive" dataset
+simAttractive <- inv.logit(rnorm(n=3000,mean=.8,sd=.8))
+
+# Making sure our mean and sd match the desired values
+mean(simAttractive)
+sd(simAttractive)
+
+# Simulating the "unattractive" dataset
+simUnattractive <- inv.logit(rnorm(n=3000,mean=-.88,sd=1.35))
+
+# Making sure our mean and sd match the desired values
+mean(simUnattractive)
+sd(simUnattractive)
+```
+
+
+```{r to dataframe}
+df <- data.frame(simAttractive,simUnattractive)
+# df <- df %>% pivot_longer(cols=1:2,
+#                           names_to="dataset",
+#                           values_to="value")
+```
+
+# Question 4
+```{r t test}
+# testing for a significant difference between the two distributions
+t.test(df$simAttractive,df$simUnattractive, alternative='greater',var.equal=F)
+
+# Plotting the density curves of the simulated data
+dAttractive <- density(df$simAttractive)
+dUnattractive <- density(df$simUnattractive)
+par(mfrow=c(1,1))
+plot(dAttractive, lwd = 2, col = "red",
+    main = "Simulated Data", xlab = "QED",ylab="density")
+lines(dUnattractive, col = "blue", lwd = 2)
+legend(.225, 2.4, legend=c("Attractive", "Unattractive"),
+       col=c("red", "blue"),lty=1:1)
+```
+
+As indicated by the results of the t-test and the density plot above, these two distribution are significantly different.
+
+# Question 6
+```{r minimal mean}
+# Trying 100 simulations with minimal difference between means to see if any simulations still result in a significant difference
+hits <- 0
+for (i in c(1:100)) {
+  simAttractive <- inv.logit(rnorm(n=3000,mean=-.76,sd=.8))
+  simUnattractive <- inv.logit(rnorm(n=3000,mean=-.88,sd=1.35))
+  t <- t.test(simAttractive,simUnattractive, alternative='greater',var.equal=F)
+  if (t$p.value<0.05){
+     hits <- hits+1
+     # these lines save the last sig dif simulated data sets to be plotted later
+     dAttractive <- density(simAttractive)
+     dUnattractive <- density(simUnattractive)
+  }
+}
+hits
+
+# Plotting again to help visualize
+par(mfrow=c(1,1))
+plot(dAttractive, lwd = 2, col = "red",
+    main = "Minimal Mean", ylab = "density",xlab="QED")
+lines(dUnattractive, col = "blue", lwd = 2)
+legend(.65, 2.25, legend=c("Attractive", "Unattractive"),
+       col=c("red", "blue"),lty=1:1)
+```
+
+`hits` represents the number of simulated data sets that resulted in a significant t-test result, out of 100 simulations. The accompanying plot shows the most recent (for-loop wise) significantly different simulated data set. It seems like the minimal difference necessary for the two means of the distributions to still be significantly different is 0.12 (given that their standard deviations are unchanged).
+
+# Question 7
+```{r Minimal sample size}
+# Trying 100 simulations to get an idea of the minimal sample size required to still get a significant difference in distribution means
+hits <- 0
+for (i in c(1:100)) {
+  simAttractive <- inv.logit(rnorm(n=2,mean=.8,sd=.8))
+  simUnattractive <- inv.logit(rnorm(n=2,mean=-.88,sd=1.35))
+  t <- t.test(simAttractive,simUnattractive, alternative='greater',var.equal=F)
+  if (t$p.value<0.05){
+     hits <- hits+1
+  }
+}
+hits
+```
+
+Even with the minimal sample size of n=2, the simulated data sets are still significantly different roughly 25% of the time. *Note:* I figured it wasn't worth making a plot for these data with such a small sample size.
