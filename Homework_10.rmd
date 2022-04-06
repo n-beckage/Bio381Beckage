@@ -1,0 +1,115 @@
+---
+title: "Homework_10"
+author: "Noah Beckage"
+date: "4/6/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyr)
+library(dplyr)
+```
+
+[Home page](index.html)
+
+# Question 1
+```{r Q1}
+##################################################
+# FUNCTION: count_zeroes
+# counts all the zeroes in a numeric vector
+# input: vect -> a numeric vector
+# output: counter -> the number of zeroes in vect (int)
+#------------------------------------------------- 
+count_zeroes <- function(vect=sample(c(-10:10),size=100,replace=T)){
+  counter <- 0
+  for(i in 1:length(vect)){
+    if(vect[i]==0){
+      counter <- counter+1
+    }
+  }
+ return(counter)
+}
+
+# Common vector to make sure both functions are working
+vect <- sample(c(-10:10),size=100,replace=T)
+count_zeroes(vect)
+
+```
+
+# Question 2
+
+```{r Q2}
+##################################################
+# FUNCTION: count_zeroesSingle
+# counts all the zeroes in a numeric vector in a single line of code
+# input: vect -> a numeric vector
+# output: the number of zeroes in vect (int)
+#------------------------------------------------- 
+count_zeroesSingle <- function(vect=sample(c(-10:10),size=100,replace=T)){
+  return(length(subset(vect,vect==0)))
+}
+count_zeroesSingle(vect) # returns the same as previous function -> it works!
+```
+
+# Question 3
+```{r Q3}
+##################################################
+# FUNCTION: product_matrix
+# creates a matrix where each element is the product of its respective row # and col #
+# input: nrows, ncols -> number of rows and cols (ints)
+# output: mat -> matrix of size nrows, ncols
+#------------------------------------------------- 
+product_matrix <- function(nrows=runif(1,min=1,max=10),ncols=runif(1,min=1,max=10)){
+  mat=matrix(data=NA, nrow=nrows,ncol=ncols)
+  if(nrows<=0 | ncols<=0){
+    return(message("Error: nrows and ncols must both be greater than zero"))
+  }
+  for(i in 1:nrow(mat)){
+    for(j in 1:ncol(mat)){
+      mat[i,j] <- i*j
+      }
+  }
+ return(mat)
+}
+product_matrix()
+```
+
+# Question 4
+### Part a)
+```{r}
+df <- data.frame(group_1=rnorm(n=20,mean=5),
+                 group_2=rnorm(n=20,mean=10),
+                 group_3=rnorm(n=10,mean=15))
+mydf <- df %>% pivot_longer(colnames(df),names_to="group",values_to="response_values")
+
+```
+
+### Part b)
+
+```{r}
+
+##################################################
+# FUNCTION: shuffle_data
+# shuffles the response values of a given data frame and returns the means for those values by treatment group
+# input: df -> the dataframe containing the treatment and value vectors
+#        group_col -> the name of the column containing treatment groups
+#        resp_col -> the name of the column containing the response values
+# output: means -> a vector containing the means of the shuffled treatment groups
+#------------------------------------------------- 
+shuffle_data <- function(df=data.frame(group=sample(c("group_1","group_2","group_3"),size=20,replace=T),response=runif(n=20,min=0,max=20)),group_col="group",resp_col="response"){
+  df[resp_col] <- sample(df[,resp_col])
+  names(df)[names(df)==group_col] <- "group"
+  names(df)[names(df)==resp_col] <- "response"
+  means <-  df %>% 
+    group_by(group) %>% 
+    summarise(mean(response))
+ means <- means %>% pull("mean(response)")
+ return(means)
+}
+
+shuffle_data()
+shuffle_data(mydf,"group","response_values")
+```
+
+

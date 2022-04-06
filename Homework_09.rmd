@@ -33,29 +33,51 @@ simData <- function(size=1000) {
 simData()
 
 ##################################################
-# FUNCTION: do_
-# one line description
-# input: x
-# output: x 
+# FUNCTION: do_t_test()
+# performs an independent t-test and return the p-value
+# input: x , y -> numerical vectors to test; ch -> character string identifying the alt hypothesis ('t'= tests for any difference in means, 'g'= tests if the mean of x > the mean of y, 'l'= tests if the mean of x < the mean of y)
+# output: the p-value of the t-test
 #------------------------------------------------- 
-FunctionName <- function(vect1,vect2) {
-  t.test(vect1,vect2, alternative='greater',var.equal=F)
+do_t_test <- function(x=runif(10),y=runif(10),ch='t') {
+  tt <- t.test(x,y,alternative=ch,var.equal=F)
+  return(tt$p.value)
+}
 
-
- return("testing..............FunctionName")
+##################################################
+# FUNCTION: QED_dplot()
+# produces a density plot of 2 QED distributions
+# input: df -> dataframe containing at least 2 QED distributions as columns; xcol,ycol -> specifies the index of the 1st and 2nd distributions, respectively
+# output: dplot -> the density plot object
+#------------------------------------------------- 
+QED_dplot<- function(df=data.frame(runif(10),runif(10)),xcol=1,ycol=2){
+  d1 <- density(df[,xcol])
+  d2 <- density(df[,ycol])
+  if(max(d1$y)>max(d2$y)){
+    plot(d1, lwd = 2, col = "red",
+    main = "Simulated Data", xlab = "QED",ylab="density")
+    lines(d2, col = "blue", lwd = 2)
+  } else {
+      plot(d2, lwd = 2, col = "red",
+      main = "Simulated Data", xlab = "QED",ylab="density")
+      lines(d1, col = "blue", lwd = 2)
+  }
 }
 
 # Global variables
 #----------------------------------------------
 attractiveCol <- 1 # column with data for attractive molecules
 unattractiveCol <- 2 # column with data for unattractive molecules
+Ha <- 'g' # the alternative hypothesis for the t test
 #----------------------------------------------
 
 # Program body
 temp1 <- simData() # construct the data frame
+do_t_test(temp1[,attractiveCol],temp1[,unattractiveCol],ch=Ha) # do the t test
+QED_dplot(temp1,attractiveCol,unattractiveCol) # plot the results
 
-attractive <- temp1[,attractiveCol] # extract the predictor variable
-unattractive <- temp1[,unattractiveCol] # extract the response variable
+
+
+
 ```
 
 

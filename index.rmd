@@ -28,4 +28,8 @@ Welcome to my website! This page has been created as part of the coursework for 
 
 [Homework #9 page](Homework_09.html)
 
+[Homework #10 page](Homework_10.html)
+
+[Homework #11 page](Homework_11.html)
+
 ![Rio Grande Gorge outside of Taos, NM (2021)](rio grande gorge.JPG)
