@@ -6,9 +6,10 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE,message = FALSE)
 library(tidyr)
 library(dplyr)
+library(ggplot2)
 ```
 
 [Home page](index.html)
@@ -82,7 +83,8 @@ df <- data.frame(group_1=rnorm(n=20,mean=5),
                  group_2=rnorm(n=20,mean=10),
                  group_3=rnorm(n=10,mean=15))
 mydf <- df %>% pivot_longer(colnames(df),names_to="group",values_to="response_values")
-
+mydf <- data.frame(mydf)
+str(mydf)
 ```
 
 ### Part b)
@@ -95,7 +97,7 @@ mydf <- df %>% pivot_longer(colnames(df),names_to="group",values_to="response_va
 # input: df -> the dataframe containing the treatment and value vectors
 #        group_col -> the name of the column containing treatment groups
 #        resp_col -> the name of the column containing the response values
-# output: means -> a vector containing the means of the shuffled treatment groups
+# output: means -> a vector containing the means of the shuffled treatment groups,IN NUMERICAL ORDER
 #------------------------------------------------- 
 shuffle_data <- function(df=data.frame(group=sample(c("group_1","group_2","group_3"),size=20,replace=T),response=runif(n=20,min=0,max=20)),group_col="group",resp_col="response"){
   df[resp_col] <- sample(df[,resp_col])
@@ -112,4 +114,28 @@ shuffle_data()
 shuffle_data(mydf,"group","response_values")
 ```
 
+### Part C
+```{r C}
+mat <- matrix(ncol=4,nrow=0)
+for(i in 1:100){
+  row <- c(i,shuffle_data())
+  mat <- rbind(mat,row)
+}
+mean_reps <- data.frame(mat)
+colnames(mean_reps) <- c("rep_num","group1","group2","group3")
+str(mean_reps)
+```
+
+### Part D
+
+```{r D}
+p2 <- mean_reps %>% 
+  pivot_longer(cols=c('group1','group2','group3'),names_to = 'group') %>% 
+  ggplot(mapping = aes(x=value,fill=group))+
+  geom_histogram(color='black',alpha=0.5,position = 'stack')+
+  labs(title = "Distribution of means for each group",
+       caption = "Note: bins are stacked",
+       x="Mean",y="Count",fill="Group")
+p2
+```
 

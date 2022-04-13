@@ -1,0 +1,40 @@
+---
+title: "Homework_12"
+author: "Noah Beckage"
+date: "4/13/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+library(RColorBrewer)
+```
+
+# Read in Data
+This data set contains 10 molecular properties from a random sample of 88,878 chemicals from the PubChem database. First column `SMILES` contains a unique <a href="https://en.wikipedia.org/wiki/Simplified_molecular-input_line-entry_system" target="_blank">smile string</a> for each chemical. There is also a column with G-protein coupled receptor (GPCR) activity scores and one with qualitative estimates of drug-likeness (QED).
+
+For ease of computing, I'm going to take a random sample of 10,000 rows from this data frame.
+
+```{r read data}
+df <- read.csv("C:/Users/nbeck/OneDrive/Desktop/Spring 2022/CS 287/Project/CS287-Project/data/PubChemData.csv")
+
+chem_data <- df[sample(1:nrow(df),10000),]
+str(chem_data)
+```
+
+# How do molecular features correspond to GPCR activity scores?
+```{r mf plots}
+p2 <- ggplot(data=chem_data,mapping=aes(x=MW,y=GPCR_act))+
+  geom_density_2d_filled()+
+  #stat_density_2d(aes(fill = stat(level)), geom = "polygon")+
+  xlim(0,600)
+p2
+  
+p1 <- ggplot(data=chem_data,mapping=aes(x=MW,y=GPCR_act))+
+  stat_density_2d(geom = "raster", aes(fill = stat(density)), contour = FALSE)+
+  scale_fill_gradient(low='blue4',high='firebrick1')+
+  theme_classic()
+p1
+```
+
