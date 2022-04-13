@@ -6,10 +6,19 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE,message=FALSE,warning = FALSE)
+```
+
+#### Libraries
+```{r libraries}
 library(ggplot2)
 library(RColorBrewer)
+library(viridisLite)
+library(paletteer)
+library(ggpubr)
+library(grid)
 ```
+
 
 # Read in Data
 This data set contains 10 molecular properties from a random sample of 88,878 chemicals from the PubChem database. First column `SMILES` contains a unique <a href="https://en.wikipedia.org/wiki/Simplified_molecular-input_line-entry_system" target="_blank">smile string</a> for each chemical. There is also a column with G-protein coupled receptor (GPCR) activity scores and one with qualitative estimates of drug-likeness (QED).
@@ -17,24 +26,75 @@ This data set contains 10 molecular properties from a random sample of 88,878 ch
 For ease of computing, I'm going to take a random sample of 10,000 rows from this data frame.
 
 ```{r read data}
-df <- read.csv("C:/Users/nbeck/OneDrive/Desktop/Spring 2022/CS 287/Project/CS287-Project/data/PubChemData.csv")
+all_data <- read.csv("C:/Users/nbeck/OneDrive/Desktop/Spring 2022/CS 287/Project/CS287-Project/data/PubChemData.csv")
 
-chem_data <- df[sample(1:nrow(df),10000),]
-str(chem_data)
+small_data <- all_data[sample(1:nrow(all_data),10000),]
+str(small_data)
 ```
 
-# How do molecular features correspond to GPCR activity scores?
-```{r mf plots}
-p2 <- ggplot(data=chem_data,mapping=aes(x=MW,y=GPCR_act))+
-  geom_density_2d_filled()+
-  #stat_density_2d(aes(fill = stat(level)), geom = "polygon")+
-  xlim(0,600)
-p2
+# How does molecular weight relate to GPCR activity scores?
+```{r make plot functions}
+thermal <- colorRampPalette(c("black","blue", "#007FFF", "cyan",
+                                 "#7FFF7F", "yellow", "#FF7F00", "red", 
+                                 "white"))
   
-p1 <- ggplot(data=chem_data,mapping=aes(x=MW,y=GPCR_act))+
+##################################################
+# FUNCTION: MW_dplot -> Molecular weight Density Plot
+# Makes nice density plots of the specified molecular property vs GPCR Activity
+# input: df->source data frame; x(str)->col to use for x value; y(str)-> col to use for y values; palette(str)->name of palette to be used (must be in viridus palette); xlimit(int/double)->x limit for the graph; the rest of the input are strings specifying graph labels
+# output: p -> prints the plot
+#------------------------------------------------- 
+MW_dplot <- function(df=small_data,
+                           x='MW',
+                           y='GPCR_act',
+                           palette="magma",
+                           xlimit=NULL,
+                           xlab='Molecular Weight',
+                           ylab='GPCR Activity Score',
+                           title=NULL,
+                           subtitle=NULL,
+                           cap=NULL,
+                           legend='Density') {
+  p <- ggplot(data=df,mapping=aes_string(x=x,y=y))+
   stat_density_2d(geom = "raster", aes(fill = stat(density)), contour = FALSE)+
-  scale_fill_gradient(low='blue4',high='firebrick1')+
-  theme_classic()
-p1
+  scale_fill_viridis_c(option=palette)+
+  theme_classic()+
+  labs(x=xlab,y=ylab,fill=legend)
+  if(!is.null(xlimit)){
+    p <- p+xlim(0,xlimit)
+  }
+  if(!is.null(title)){
+    p <- p+labs(title=title)
+  }
+  if(!is.null(subtitle)){
+    p <- p+labs(subtitle=subtitle)
+  }
+  if(!is.null(cap)){
+    p <- p+labs(caption=cap)
+  }
+ return(p)
+}
 ```
+
+```{r make plots}
+mw_inferno <- MW_dplot(palette = 'inferno',xlimit=700,xlab=NULL,ylab=NULL,title='Inferno')
+
+mw_magma <- MW_dplot(palette = 'magma',xlimit=700,xlab=NULL,ylab=NULL,title='Magma')
+
+mw_plasma <- MW_dplot(palette = 'plasma',xlimit=700,xlab=NULL,ylab=NULL,title='Plasma')
+
+mw_thermal <- MW_dplot(xlimit=700,xlab=NULL,ylab=NULL,title='Thermal (custom)')+
+  scale_fill_gradientn(colors=thermal(6))
+```
+
+```{r make figure}
+figure <- ggarrange(mw_inferno,mw_magma,mw_plasma,mw_thermal,ncol=2,nrow=2)
+figure <- annotate_figure(figure, left = textGrob("GPCR Activity", rot = 90, vjust = 1, gp = gpar(cex = 1.5)),
+                    bottom = textGrob("Molecular Weight", gp = gpar(cex = 1.5)))
+figure
+# figure %>% ggexport(filename = "hw12_LARGE_plot.pdf")
+```
+After many hours, *that* is a figure I can proudly display. The last line I commented out creates a <a href="hw12_LARGE_plot.pdf" target="_blank">pdf</a> of the plot that would be ready for publication. That pdf is generated from the full dataset (n=88,878), but for this R markdown I'm running the smaller dataset (n=10,000) to save some computing time. It looks pretty, but all in all I don't think this would be the most accurate visualization of these data. The intense color scales tend to obscure the sample size of the data and over-emphasize density; the density function and intense colors also mask outliers (from looking at a scatter plot, I know there were a few very heavy chemicals that don't show up well in these plots). I've also been told that the density function uses a gaussian kernel, and although I don't totally understand what that means, I know that we can't assume these data are gaussian. 
+
+All in all though, I do find these plots satisfying. I'll say that between all these weedy ggplot-based packages and Python's matplotlib (which my lab tends to use for visualizations), making nice graphs, let alone figures, can easily become a headache. All the more reason this was a useful exercise.
 
