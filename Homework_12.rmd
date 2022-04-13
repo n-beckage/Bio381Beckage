@@ -5,6 +5,8 @@ date: "4/13/2022"
 output: html_document
 ---
 
+[Home page](index.html)
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE,message=FALSE,warning = FALSE)
 ```
