@@ -5,3 +5,4 @@
 *.Ruserdata
 *.RDataTmp
 *.Rproj
+.Rproj.user
