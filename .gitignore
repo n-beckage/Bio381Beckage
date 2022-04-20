@@ -1,7 +1,7 @@
 # these are files that will not be commited (version-controlled)
-.Rproj.user
-.Rhistory
-.RData
-.Ruserdata
-.RDataTmp
-.Rproj
+*.Rproj.user
+*.Rhistory
+*.RData
+*.Ruserdata
+*.RDataTmp
+*.Rproj
