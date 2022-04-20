@@ -23,7 +23,7 @@ knitr::opts_chunk$set(echo = TRUE,warning = FALSE)
 # output: set of random files
 #------------------------------------------------- 
 file_builder <- function(file_n=10,
-                        file_folder="RandomFiles/",
+                        file_folder="Data/RandomFiles/",
                         file_size=c(15,100),
                         file_na=3){
 for (i in seq_len(file_n)) {
@@ -90,9 +90,9 @@ t_stats <- function(d=NULL) {
 ```{r results='hide'}
 #--------------------------------------------
 # Global variables
-file_folder <- "RandomFiles/"
+file_folder <- "Data/RandomFiles/"
 n_files <- 100
-file_out <- "StatsSummary.csv"
+file_out <- "Data/StatsSummary.csv"
 #--------------------------------------------
 
 # Create 100 random data sets
@@ -142,7 +142,7 @@ for (i in seq_along(file_names)) {
 ```
 
 ```{r}
-df <- read.table("StatsSummary.csv",sep=',',header = TRUE)
+df <- read.table("Data/StatsSummary.csv",sep=',',header = TRUE)
 head(df)
 ```
 

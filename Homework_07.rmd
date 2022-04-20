@@ -5,7 +5,7 @@ date: "3/2/2022"
 output: html_document
 ---
 
-![What lovely flowers (Crocus 2022)](iris.jpg)
+![What lovely flowers (Crocus 2022)](images/iris.jpg)
 
 [Home page](index.html)
 

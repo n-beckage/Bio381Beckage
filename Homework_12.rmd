@@ -28,7 +28,7 @@ This data set contains 10 molecular properties from a random sample of 88,878 ch
 For ease of computing, I'm going to take a random sample of 10,000 rows from this data frame.
 
 ```{r read data}
-all_data <- read.csv("C:/Users/nbeck/OneDrive/Desktop/Spring 2022/CS 287/Project/CS287-Project/data/PubChemData.csv")
+all_data <- read.csv("C:/Users/nbeck/Desktop/Spring 2022/CS 287/Project/CS287-Project/data/PubChemData.csv")
 
 small_data <- all_data[sample(1:nrow(all_data),10000),]
 str(small_data)
@@ -51,6 +51,7 @@ MW_dplot <- function(df=small_data,
                            y='GPCR_act',
                            palette="magma",
                            xlimit=NULL,
+                           xmin=NULL,
                            xlab='Molecular Weight',
                            ylab='GPCR Activity Score',
                            title=NULL,
@@ -62,7 +63,9 @@ MW_dplot <- function(df=small_data,
   scale_fill_viridis_c(option=palette)+
   theme_classic()+
   labs(x=xlab,y=ylab,fill=legend)
-  if(!is.null(xlimit)){
+  if(!is.null(xlimit)&!is.null(xmin)){
+    p <- p+xlim(xmin,xlimit)
+  } else if(!is.null(xlimit)){
     p <- p+xlim(0,xlimit)
   }
   if(!is.null(title)){
@@ -79,24 +82,25 @@ MW_dplot <- function(df=small_data,
 ```
 
 ```{r make plots}
-mw_inferno <- MW_dplot(palette = 'inferno',xlimit=700,xlab=NULL,ylab=NULL,title='Inferno')
+mw_inferno <- MW_dplot(x='MW',palette = 'inferno',xlimit=700,ylab=NULL,title='Inferno')
 
-mw_magma <- MW_dplot(palette = 'magma',xlimit=700,xlab=NULL,ylab=NULL,title='Magma')
+mw_magma <- MW_dplot(x='ALOGP',palette = 'magma',xlimit=10,xmin=-5,xlab='LogP',ylab=NULL,title='Magma')
 
-mw_plasma <- MW_dplot(palette = 'plasma',xlimit=700,xlab=NULL,ylab=NULL,title='Plasma')
+mw_plasma <- MW_dplot(x='MR',palette = 'plasma',xlimit=200,xlab='Molar Refractivity',ylab=NULL,title='Plasma')
 
-mw_thermal <- MW_dplot(xlimit=700,xlab=NULL,ylab=NULL,title='Thermal (custom)')+
+mw_thermal <- MW_dplot(x='PSA',xlimit=200,xlab='Polar Surface Area',ylab=NULL,title='Thermal (custom)')+
   scale_fill_gradientn(colors=thermal(6))
 ```
 
 ```{r make figure}
 figure <- ggarrange(mw_inferno,mw_magma,mw_plasma,mw_thermal,ncol=2,nrow=2)
-figure <- annotate_figure(figure, left = textGrob("GPCR Activity", rot = 90, vjust = 1, gp = gpar(cex = 1.5)),
-                    bottom = textGrob("Molecular Weight", gp = gpar(cex = 1.5)))
+figure <- annotate_figure(figure, left = textGrob("GPCR Activity", rot = 90, vjust = 1, gp = gpar(cex = 1.5)))
 figure
-# figure %>% ggexport(filename = "hw12_LARGE_plot.pdf")
+
+# Ran the code once with the larger dataset, then saved it
+# figure %>% ggexport(filename = "images/hw12_all_data_4feature_plot.png")
 ```
-After many hours, *that* is a figure I can proudly display. The last line I commented out creates a <a href="hw12_LARGE_plot.pdf" target="_blank">pdf</a> of the plot that would be ready for publication. That pdf is generated from the full dataset (n=88,878), but for this R markdown I'm running the smaller dataset (n=10,000) to save some computing time. It looks pretty, but all in all I don't think this would be the most accurate visualization of these data. The intense color scales tend to obscure the sample size of the data and over-emphasize density; the density function and intense colors also mask outliers (from looking at a scatter plot, I know there were a few very heavy chemicals that don't show up well in these plots). I've also been told that the density function uses a gaussian kernel, and although I don't totally understand what that means, I know that we can't assume these data are gaussian. 
+After many hours, *that* is a figure I can proudly display. The last line I commented out creates a <a href="images/hw12_all_data_4feature_plot.pdf" target="_blank">pdf</a> of the plot that would be ready for publication. That pdf is generated from the full dataset (n=88,878), but for this R markdown I'm running the smaller dataset (n=10,000) to save some computing time. It looks pretty, but all in all I don't think this would be the most accurate visualization of these data. The intense color scales tend to obscure the sample size of the data and over-emphasize density; the density function and intense colors also mask outliers (from looking at a scatter plot, I know there were a few very heavy chemicals that don't show up well in these plots). I've also been told that the density function uses a gaussian kernel, and although I don't totally understand what that means, I know that we can't assume these data are gaussian. 
 
 All in all though, I do find these plots satisfying. I'll say that between all these weedy ggplot-based packages and Python's matplotlib (which my lab tends to use for visualizations), making nice graphs, let alone figures, can easily become a headache. All the more reason this was a useful exercise.
 

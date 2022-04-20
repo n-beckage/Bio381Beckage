@@ -11,11 +11,17 @@ knitr::opts_chunk$set(echo = TRUE)
 
 Welcome to my website! This page has been created as part of the coursework for BIOL 381 Computational Biology at UVM. Find links to homework assignments for said class below.
 
+<style>
+.pic {
+  max-width: 30%;
+}
+</style>
 
 [Homework #2 page](Homework_02.html)
 
 [Homework #3 page](Homework_03.html)
 
+<IMG align = right SRC="images/author_photo.JPG" style="transform:rotate(90deg);" class="pic" ALT="MollyBog"/>
 [Homework #4 page](Homework_04.html)
 
 [Homework #5 page](Homework_05.html)
@@ -34,4 +40,4 @@ Welcome to my website! This page has been created as part of the coursework for 
 
 [Homework #12 page](Homework_12.html)
 
-![Rio Grande Gorge outside of Taos, NM (2021)](rio grande gorge.JPG)
+![Rio Grande Gorge outside of Taos, NM (2021)](images/rio grande gorge.JPG)

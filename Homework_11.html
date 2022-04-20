@@ -380,7 +380,7 @@ pre code {
 # output: set of random files
 #------------------------------------------------- 
 file_builder &lt;- function(file_n=10,
-                        file_folder=&quot;RandomFiles/&quot;,
+                        file_folder=&quot;Data/RandomFiles/&quot;,
                         file_size=c(15,100),
                         file_na=3){
 for (i in seq_len(file_n)) {
@@ -440,9 +440,9 @@ t_stats &lt;- function(d=NULL) {
 }</code></pre>
 <pre class="r"><code>#--------------------------------------------
 # Global variables
-file_folder &lt;- &quot;RandomFiles/&quot;
+file_folder &lt;- &quot;Data/RandomFiles/&quot;
 n_files &lt;- 100
-file_out &lt;- &quot;StatsSummary.csv&quot;
+file_out &lt;- &quot;Data/StatsSummary.csv&quot;
 #--------------------------------------------
 
 # Create 100 random data sets
@@ -489,15 +489,15 @@ for (i in seq_along(file_names)) {
               col.names=TRUE,
               sep=&quot;,&quot;,
               append=TRUE)</code></pre>
-<pre class="r"><code>df &lt;- read.table(&quot;StatsSummary.csv&quot;,sep=&#39;,&#39;,header = TRUE)
+<pre class="r"><code>df &lt;- read.table(&quot;Data/StatsSummary.csv&quot;,sep=&#39;,&#39;,header = TRUE)
 head(df)</code></pre>
 <pre><code>##   ID      file_name        p_val
-## 1  1 ranFile001.csv 3.096200e-14
-## 2  2 ranFile002.csv 2.490837e-04
-## 3  3 ranFile003.csv 8.145464e-11
-## 4  4 ranFile004.csv 1.557951e-04
-## 5  5 ranFile005.csv 1.209557e-10
-## 6  6 ranFile006.csv 2.395272e-06</code></pre>
+## 1  1 ranFile001.csv 6.218659e-07
+## 2  2 ranFile002.csv 2.751935e-17
+## 3  3 ranFile003.csv 4.101070e-12
+## 4  4 ranFile004.csv 3.317791e-09
+## 5  5 ranFile005.csv 4.578290e-08
+## 6  6 ranFile006.csv 1.738819e-11</code></pre>
 
 
 

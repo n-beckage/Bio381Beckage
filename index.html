@@ -255,6 +255,7 @@ if (window.hljs) {
 
 
 
+
 <style type="text/css">
 .main-container {
   max-width: 940px;
@@ -275,6 +276,9 @@ button.code-folding-btn:focus {
 }
 summary {
   display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
 }
 pre code {
   padding: 0;
@@ -368,9 +372,15 @@ pre code {
 <p>Welcome to my website! This page has been created as part of the
 coursework for BIOL 381 Computational Biology at UVM. Find links to
 homework assignments for said class below.</p>
+<style>
+.pic {
+  max-width: 30%;
+}
+</style>
 <p><a href="Homework_02.html">Homework #2 page</a></p>
 <p><a href="Homework_03.html">Homework #3 page</a></p>
-<p><a href="Homework_04.html">Homework #4 page</a></p>
+<p><IMG align="right" SRC="images/author_photo.JPG" style="transform:rotate(90deg);" class="pic" ALT="MollyBog" />
+<a href="Homework_04.html">Homework #4 page</a></p>
 <p><a href="Homework_05.html">Homework #5 page</a></p>
 <p><a href="Homework_06.html">Homework #6 page</a></p>
 <p><a href="Homework_07.html">Homework #7 page</a></p>
