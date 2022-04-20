@@ -255,6 +255,7 @@ if (window.hljs) {
 
 
 
+
 <style type="text/css">
 .main-container {
   max-width: 940px;
@@ -275,6 +276,9 @@ button.code-folding-btn:focus {
 }
 summary {
   display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
 }
 pre code {
   padding: 0;
@@ -366,6 +370,134 @@ pre code {
 
 
 <p><a href="index.html">Home page</a></p>
+<pre class="r"><code>##################################################
+# function: file_builder
+# create a set of random files for regression
+# input: file_n = number of files to create
+#       : file_folder = name of folder for random files
+#       : file_size = c(min,max) number of rows in file
+#       : file_na = number on average of NA values per column
+# output: set of random files
+#------------------------------------------------- 
+file_builder &lt;- function(file_n=10,
+                        file_folder=&quot;RandomFiles/&quot;,
+                        file_size=c(15,100),
+                        file_na=3){
+for (i in seq_len(file_n)) {
+file_length &lt;- sample(file_size[1]:file_size[2],size=1) # get number of rows
+var_x &lt;- runif(file_length,max=0.75) # create random x with predetermined max
+var_y &lt;- runif(file_length,min=0.25) # create random y with predetermined min
+df &lt;- data.frame(var_x,var_y) # bind into a data frame
+bad_vals &lt;- rpois(n=1,lambda=file_na) # determine NA number
+df[sample(nrow(df),size=bad_vals),1] &lt;- NA # random NA in var_x
+df[sample(nrow(df),size=bad_vals),2] &lt;- NA # random NA in var_y
+
+# create label for file name with padded zeroes
+file_label &lt;- paste(file_folder,
+                       &quot;ranFile&quot;,
+                       formatC(i,
+                       width=3,
+                       format=&quot;d&quot;,
+                       flag=&quot;0&quot;),
+                       &quot;.csv&quot;,sep=&quot;&quot;)
+
+# set up data file and incorporate time stamp and minimal metadata
+write.table(cat(&quot;# Simulated random data file for batch processing&quot;,&quot;\n&quot;,
+                    &quot;# timestamp: &quot;,as.character(Sys.time()),&quot;\n&quot;,
+                    &quot;# NBB&quot;,&quot;\n&quot;,
+                    &quot;# ------------------------&quot;, &quot;\n&quot;,
+                    &quot;\n&quot;,
+                    file=file_label,
+                    row.names=&quot;&quot;,
+                    col.names=&quot;&quot;,
+                    sep=&quot;&quot;))
+
+# now add the data frame
+write.table(x=df,
+            file=file_label,
+            sep=&quot;,&quot;,
+            row.names=FALSE,
+            append=TRUE)
+
+
+}
+}</code></pre>
+<pre class="r"><code>##################################################
+# function: t_stats
+# performs t test, returns p value
+# input: 2-column data frame (x and y)
+# output: p-value
+#------------------------------------------------- 
+t_stats &lt;- function(d=NULL) {
+             if(is.null(d)) {
+               x_var &lt;- runif(10,max=0.75)
+               y_var &lt;- runif(10,min=0.25)
+               d &lt;- data.frame(x_var,y_var)
+             }
+  t &lt;- t.test(x=d[,1],y=d[,2],alternative=&#39;less&#39;)
+  return(t$p.value)
+
+}</code></pre>
+<pre class="r"><code>#--------------------------------------------
+# Global variables
+file_folder &lt;- &quot;RandomFiles/&quot;
+n_files &lt;- 100
+file_out &lt;- &quot;StatsSummary.csv&quot;
+#--------------------------------------------
+
+# Create 100 random data sets
+dir.create(file_folder)
+file_builder(file_n=n_files)
+file_names &lt;- list.files(path=file_folder)
+
+# Create data frame to hold file summary statistics
+ID &lt;- seq_along(file_names)
+file_name &lt;- file_names
+slope &lt;- rep(NA,n_files)
+p_val &lt;- rep(NA,n_files)
+r2 &lt;- rep(NA,n_files)
+
+stats_out &lt;- data.frame(ID,file_name,p_val)
+
+# batch process by looping through individual files
+for (i in seq_along(file_names)) {
+  data &lt;- read.table(file=paste(file_folder,file_names[i],sep=&quot;&quot;),
+                     sep=&quot;,&quot;,
+                     header=TRUE) # read in next data file
+  
+  d_clean &lt;- data[complete.cases(data),] # get clean cases
+  
+  . &lt;- t_stats(d_clean) # pull regression stats from clean file
+  stats_out[i,3] &lt;- . # copy into last column
+  
+}
+# set up output file and incorporate time stamp and minimal metadata
+  write.table(cat(&quot;# Summary stats for batch processing of t-tests&quot;,&quot;\n&quot;,
+                    &quot;# timestamp: &quot;,as.character(Sys.time()),&quot;\n&quot;,
+                    &quot;# NBB&quot;,&quot;\n&quot;,
+                    &quot;# ------------------------&quot;, &quot;\n&quot;,
+                    &quot;\n&quot;,
+                    file=file_out,
+                    row.names=&quot;&quot;,
+                    col.names=&quot;&quot;,
+                    sep=&quot;&quot;))
+  
+# now add the data frame
+  write.table(x=stats_out,
+              file=file_out,
+              row.names=FALSE,
+              col.names=TRUE,
+              sep=&quot;,&quot;,
+              append=TRUE)</code></pre>
+<pre class="r"><code>df &lt;- read.table(&quot;StatsSummary.csv&quot;,sep=&#39;,&#39;,header = TRUE)
+head(df)</code></pre>
+<pre><code>##   ID      file_name        p_val
+## 1  1 ranFile001.csv 3.096200e-14
+## 2  2 ranFile002.csv 2.490837e-04
+## 3  3 ranFile003.csv 8.145464e-11
+## 4  4 ranFile004.csv 1.557951e-04
+## 5  5 ranFile005.csv 1.209557e-10
+## 6  6 ranFile006.csv 2.395272e-06</code></pre>
 
 
 

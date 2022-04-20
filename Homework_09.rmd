@@ -6,7 +6,7 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, message=FALSE)
+knitr::opts_chunk$set(echo = TRUE, message=FALSE,warning = FALSE)
 ```
 
 [Home page](index.html)
@@ -15,9 +15,10 @@ HEY
 
 ok homeboy all you need to do is create two more functions, one that does the t test and returns the p-value, and another that plots the data (density curve). then for part 2, all you need it do is call simData() with a different argument (such as sample size=100 instead of a 1000).
 
-```{r The Chunk}
+```{r Part 1}
 library(tidyverse)
 library(boot)
+library(ggplot2)
 
 ##################################################
 # FUNCTION: sim_data()
@@ -30,7 +31,6 @@ simData <- function(size=1000) {
   simUnattractive <- inv.logit(rnorm(n=size,mean=-.88,sd=1.35))
  return(data.frame(simAttractive,simUnattractive))
 }
-simData()
 
 ##################################################
 # FUNCTION: do_t_test()
@@ -38,8 +38,8 @@ simData()
 # input: x , y -> numerical vectors to test; ch -> character string identifying the alt hypothesis ('t'= tests for any difference in means, 'g'= tests if the mean of x > the mean of y, 'l'= tests if the mean of x < the mean of y)
 # output: the p-value of the t-test
 #------------------------------------------------- 
-do_t_test <- function(x=runif(10),y=runif(10),ch='t') {
-  tt <- t.test(x,y,alternative=ch,var.equal=F)
+do_t_test <- function(x=runif(10),y=runif(10),ch='t',equal_var=F) {
+  tt <- t.test(x,y,alternative=ch,var.equal=equal_var)
   return(tt$p.value)
 }
 
@@ -75,97 +75,30 @@ temp1 <- simData() # construct the data frame
 do_t_test(temp1[,attractiveCol],temp1[,unattractiveCol],ch=Ha) # do the t test
 QED_dplot(temp1,attractiveCol,unattractiveCol) # plot the results
 
-
-
-
 ```
 
-
-
-# Question 3
-```{r Transfrom to normal}
-# Simulating the "attractive" dataset
-simAttractive <- inv.logit(rnorm(n=3000,mean=.8,sd=.8))
-
-# Making sure our mean and sd match the desired values
-mean(simAttractive)
-sd(simAttractive)
-
-# Simulating the "unattractive" dataset
-simUnattractive <- inv.logit(rnorm(n=3000,mean=-.88,sd=1.35))
-
-# Making sure our mean and sd match the desired values
-mean(simUnattractive)
-sd(simUnattractive)
-```
-
-
-```{r to dataframe}
-df <- data.frame(simAttractive,simUnattractive)
-# df <- df %>% pivot_longer(cols=1:2,
-#                           names_to="dataset",
-#                           values_to="value")
-```
-
-# Question 4
-```{r t test}
-# testing for a significant difference between the two distributions
-t.test(df$simAttractive,df$simUnattractive, alternative='greater',var.equal=F)
-
-# Plotting the density curves of the simulated data
-dAttractive <- density(df$simAttractive)
-dUnattractive <- density(df$simUnattractive)
-par(mfrow=c(1,1))
-plot(dAttractive, lwd = 2, col = "red",
-    main = "Simulated Data", xlab = "QED",ylab="density")
-lines(dUnattractive, col = "blue", lwd = 2)
-legend(.225, 2.4, legend=c("Attractive", "Unattractive"),
-       col=c("red", "blue"),lty=1:1)
-```
-
-As indicated by the results of the t-test and the density plot above, these two distribution are significantly different.
-
-# Question 6
-```{r minimal mean}
-# Trying 100 simulations with minimal difference between means to see if any simulations still result in a significant difference
-hits <- 0
-for (i in c(1:100)) {
-  simAttractive <- inv.logit(rnorm(n=3000,mean=-.76,sd=.8))
-  simUnattractive <- inv.logit(rnorm(n=3000,mean=-.88,sd=1.35))
-  t <- t.test(simAttractive,simUnattractive, alternative='greater',var.equal=F)
-  if (t$p.value<0.05){
-     hits <- hits+1
-     # these lines save the last sig dif simulated data sets to be plotted later
-     dAttractive <- density(simAttractive)
-     dUnattractive <- density(simUnattractive)
-  }
+```{r Part 2}
+##################################################
+# FUNCTION: QED_histplot()
+# produces an overlapping histogram of the 2 QED distributions
+# input: df -> dataframe containing at least 2 QED distributions as columns; attractive, unattractive -> specifies the index of the 1st and 2nd distributions, respectively; pval
+# output: histplot -> the histogram plot object
+#------------------------------------------------- 
+QED_histplot<- function(df=data.frame(x1=runif(1000,max=.75),x2=runif(1000,min=0.25)),atractive=1,unatrractive=2,pval=''){
+  atrcol <- df[,1]
+  unatrcol <- df[,2]
+  df <- data.frame(Attractive=atrcol,Unattractive=unatrcol)
+  df <- df %>% pivot_longer(cols=c(Attractive,Unattractive),names_to="Distribution")
+  histplot <- ggplot(data=df,aes(x=value,fill=Distribution))+
+    geom_histogram(color='black',position='identity',alpha=0.5,bins=50)+
+    scale_fill_manual(values=c('red','blue'))+
+    labs(x='QED',title="Simulated QED distributions of aesthetically-judged chemical compounds")+
+    annotate(geom='text',x=0.25,y=60,label=pval,color='black')
+  return(histplot)
 }
-hits
 
-# Plotting again to help visualize
-par(mfrow=c(1,1))
-plot(dAttractive, lwd = 2, col = "red",
-    main = "Minimal Mean", ylab = "density",xlab="QED")
-lines(dUnattractive, col = "blue", lwd = 2)
-legend(.65, 2.25, legend=c("Attractive", "Unattractive"),
-       col=c("red", "blue"),lty=1:1)
+# Program body
+temp1 <- simData() # construct the data frame
+pvalue <- paste("p =",as.character(do_t_test(temp1[,attractiveCol],temp1[,unattractiveCol],ch=Ha))) # do the t test
+QED_histplot(temp1,attractiveCol,unattractiveCol,pval=pvalue) # plot the results
 ```
-
-`hits` represents the number of simulated data sets that resulted in a significant t-test result, out of 100 simulations. The accompanying plot shows the most recent (for-loop wise) significantly different simulated data set. It seems like the minimal difference necessary for the two means of the distributions to still be significantly different is 0.12 (given that their standard deviations are unchanged).
-
-# Question 7
-```{r Minimal sample size}
-# Trying 100 simulations to get an idea of the minimal sample size required to still get a significant difference in distribution means
-hits <- 0
-for (i in c(1:100)) {
-  simAttractive <- inv.logit(rnorm(n=2,mean=.8,sd=.8))
-  simUnattractive <- inv.logit(rnorm(n=2,mean=-.88,sd=1.35))
-  t <- t.test(simAttractive,simUnattractive, alternative='greater',var.equal=F)
-  if (t$p.value<0.05){
-     hits <- hits+1
-  }
-}
-hits
-```
-
-Even with the minimal sample size of n=2, the simulated data sets are still significantly different roughly 25% of the time. *Note:* I figured it wasn't worth making a plot for these data with such a small sample size.
