@@ -90,7 +90,6 @@ str(mydf)
 ### Part b)
 
 ```{r}
-
 ##################################################
 # FUNCTION: shuffle_data
 # shuffles the response values of a given data frame and returns the means for those values by treatment group

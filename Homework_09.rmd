@@ -11,10 +11,6 @@ knitr::opts_chunk$set(echo = TRUE, message=FALSE,warning = FALSE)
 
 [Home page](index.html)
 
-HEY
-
-ok homeboy all you need to do is create two more functions, one that does the t test and returns the p-value, and another that plots the data (density curve). then for part 2, all you need it do is call simData() with a different argument (such as sample size=100 instead of a 1000).
-
 ```{r Part 1}
 library(tidyverse)
 library(boot)
