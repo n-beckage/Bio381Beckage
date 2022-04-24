@@ -41,3 +41,5 @@ Welcome to my website! This page has been created as part of the coursework for 
 [Homework #12 page](Homework_12.html)
 
 ![Rio Grande Gorge outside of Taos, NM (2021)](images/rio grande gorge.JPG)
+
+P.S. If anyone knows how to *properly* format, place, or add captions to images in R markdown, please let me know! Took a lot of guessing and checking to get my photo placed on the top right of the webpage like that, and I'm sure there must be a better way to do it!

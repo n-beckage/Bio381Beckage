@@ -5,8 +5,6 @@ date: "4/6/2022"
 output: html_document
 ---
 
-SCROLL TO BOTTOM TO SEE WHATS LEFT TO DO
-
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE,warning = FALSE,message = FALSE)
 ```
@@ -15,6 +13,7 @@ knitr::opts_chunk$set(echo = TRUE,warning = FALSE,message = FALSE)
 
 ```{r}
 library(dplyr)
+library(tidyr)
 ```
 
 
@@ -207,9 +206,11 @@ read_data <- function(z=NULL) {
     MW <- sample(15:1000,20,F)
     z <- data.frame(INDEX=1:20,DO_CHEMISTRY,MW)} 
   else {
-    z <-read.table(file=z,header=TRUE,sep=",")}
+    z <-read.table(file=z,header=TRUE,sep=",") %>% 
+      select(CPD_ID,DO_CHEMISTRY, MW)}
   return(z)
 }
+df <- read_data("Data/NIHMS50746-supplement-AZ_chemsurvey_QED.csv")
 ```
 
 #### Function to calculate the means for each treatment group
@@ -228,7 +229,7 @@ get_means <- function(z=NULL) {
     MW <- sample(15:1000,20,F)
     z <- data.frame(INDEX=1:20,DO_CHEMISTRY,MW)} # set up data frame                 
     group_means <- z %>% group_by(z$DO_CHEMISTRY) %>% 
-    summarise(mean=mean(z$MW))
+      summarise(mean=mean(z$MW))
   # Row names bug needs to be addressed
   t <- data.frame(t(group_means))[-1,]
   names(t) <- c("NO","YES")
@@ -250,11 +251,12 @@ get_pval <- function(z=NULL) {
     z <- data.frame(NO=sample(15:1000,20),YES=sample(15:1000,20))}
   else{
     t <- pivot_wider(z,id_cols=CPD_ID,names_from=DO_CHEMISTRY,values_from=MW)}
-  pval <- t.test(z[,"YES"],z[,"NO"])$p.value
+  pval <- t.test(t[,"YES"],t[,"NO"])$p.value
 return(pval)
 }
-get_pval()
+get_pval(df)
 ```
+
 #### Function to randomize the data
 ```{r}
 ##################################################
@@ -273,16 +275,30 @@ shuffle_data <- function(z=NULL) {
   z[,2] <- sample(z[,2])
   return(z)
 }
+head(shuffle_data(df))
 ```
 
 #### Putting it all together in program body
-
-Your functions should all be working now. Double-check that the text in the comments are correct after you finish. Ok, you have to get a p-value from a randomized, "shuffled" data set. Then compare that to the p-value from the regular (non-shuffled). Run a short loop (100x) to do 100x randomization tests and generate 100 pvalues. Now compare the average of those 100 randomized pvalues to your regular pvalue. Still different? Explain why.DONE.
-
 ```{r}
-shuffle_data(read_data("Data/NIHMS50746-supplement-AZ_chemsurvey_QED.csv") %>% 
-  select(CPD_ID,DO_CHEMISTRY, MW))
+# p-vlaue from the randomized data
+p_rand <- get_pval(shuffle_data(read_data("Data/NIHMS50746-supplement-AZ_chemsurvey_QED.csv")))
+p_reg <- get_pval(read_data("Data/NIHMS50746-supplement-AZ_chemsurvey_QED.csv"))
 
-
+p_rand_vect <- c()
+for(i in 1:100){
+  p_rand_vect <- append(p_rand_vect,get_pval(shuffle_data(read_data("Data/NIHMS50746-supplement-AZ_chemsurvey_QED.csv"))))
+}
 ```
 
+p-value for single randomization test vs that of the regular data
+```{r}
+# p-value from unrandomized data is vastly smaller than that of the randomized data
+data.frame(p_rand,p_reg)
+```
+
+Average p-value for 100 randomization tests vs that of the regular data
+```{r}
+data.frame(mean(p_rand_vect),p_reg)
+```
+
+Even after 100 randomization tests, there is still a significant difference between the average p-value of the randomization tests compared to the p-value of the un-randomized data. This is strong evidence that there is an actual difference in the molecular weight of chemicals deemed "attractive" versus those labelled "unattractive" by medicinal chemists. This makes sense, because medicinal chemists likely know that good drugs usually aren't big, heavy molecules.
