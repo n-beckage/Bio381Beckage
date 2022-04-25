@@ -21,7 +21,7 @@ Welcome to my website! This page has been created as part of the coursework for 
 
 [Homework #3 page](Homework_03.html)
 
-<IMG align = right SRC="images/author_photo.JPG" style="transform:rotate(90deg);" class="pic" ALT="MollyBog"/>
+<IMG align = right SRC="images/author_photo.JPG" style="transform:rotate(90deg);" class="pic"/>
 [Homework #4 page](Homework_04.html)
 
 [Homework #5 page](Homework_05.html)
