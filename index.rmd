@@ -11,17 +11,32 @@ knitr::opts_chunk$set(echo = TRUE)
 
 Welcome to my website! This page has been created as part of the coursework for BIOL 381 Computational Biology at UVM. Find links to homework assignments for said class below.
 
-<style>
-.pic {
-  max-width: 30%;
-}
-</style>
-
 [Homework #2 page](Homework_02.html)
 
 [Homework #3 page](Homework_03.html)
 
-<IMG align = right SRC="images/me&MtWashington.jpg" title="On Top of Mt. Liberty with Mt. Washington in background (white peak)" class="pic"/>
+<html>
+<style>
+figure {
+  border: solid 2px green;
+  padding: 4px;
+  margin: auto;
+  float: right;
+  width: 50%;
+  margin-bottom: 75px;
+}
+figcaption {
+  background-color: black;
+  color: white;
+  font-style: italic;
+  text-align: center;
+}
+</style>
+  <figure>
+    <img src="images/me&MtWashington.jpg" alt="Mt. Washington">
+    <figcaption>The author atop Mt. Liberty in Franconia Notch, NH (January 2023). You can see Mt. Washington in the background!</figcaption>
+  </figure>
+</html>
 
 [Homework #4 page](Homework_04.html)
 
@@ -42,5 +57,3 @@ Welcome to my website! This page has been created as part of the coursework for 
 [Homework #12 page](Homework_12.html)
 
 ![Rio Grande Gorge outside of Taos, NM (2021)](images/rio grande gorge.JPG)
-
-P.S. If anyone knows how to *properly* format, place, or add captions to images in R markdown, please let me know! Took a lot of guessing and checking to get my photo placed on the top right of the webpage like that, and I'm sure there must be a better way to do it!
